@@ -15,8 +15,14 @@ if [ ! -d "$LOC" ]; then
 fi
 
 # recurse
-ITEMS="$LOC/*"
-for ITEM in $ITEMS; do
+# Don't use 'for x in *' syntax because that can't handle whitespace in filenames
+find "$LOC" | while read ITEM
+do
+
+	# don't run in an endless loop
+	if [ "$ITEM" = "$LOC" ]; then
+		continue
+	fi
 
 	# traverse directories, hash files
 	if [ -d "$ITEM" ]; then
@@ -27,6 +33,6 @@ for ITEM in $ITEMS; do
 
 		# hash file
 		SUM=$($HASH_BIN "$ITEM"|cut -d' ' -f1)
-		echo "$SUM $ITEM"
+		echo "$SUM '$ITEM'"
 	fi
 done

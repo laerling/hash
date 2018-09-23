@@ -15,9 +15,9 @@ if [ ! -d "$LOC" ]; then
 fi
 
 # recurse
-# we can't use 'for x in *' syntax, because it would run in an endless loop
-ITEMS="$LOC/*"
-for ITEM in $ITEMS; do
+# Don't use 'for x in *' syntax because that can't handle whitespace in filenames
+find "$LOC" | while read ITEM
+do
 
 	# don't run in an endless loop
 	if [ "$ITEM" = "$LOC" ] || [ "$ITEM" = "$SCRIPT" ]; then
