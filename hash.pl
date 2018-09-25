@@ -3,10 +3,13 @@
 use strict;
 use warnings;
 
+# initialize constants
+my $HASH_BIN = "md5sum";
+
 # initialize variables
 my $script = $0;
 my $loc = shift || ".";
-my $hash_bin = "md5sum";
+my $rename = shift || "";
 
 # check argument
 die "Error: $loc is not a directory" unless -d $loc;
@@ -18,7 +21,7 @@ while(my $item = readdir $dir){
     # exclude ., .., and .git
     next if $item =~ /^(\.|\.\.)$|\.git/;
 
-    # build path
+    # canonize $loc and build path
     $loc = $loc . "/" unless substr($loc, -1) eq '/';
     my $itempath = "$loc$item";
 
@@ -30,11 +33,15 @@ while(my $item = readdir $dir){
     } else {
 
 	# calculate hash
-	`$hash_bin '$itempath'` =~ /(^[\S]+)/;
-	die "$hash_bin output could not be parsed" if not defined $1;
+	`$HASH_BIN '$itempath'` =~ /(^[\S]+)/;
+	die "$HASH_BIN output could not be parsed" if not defined $1;
 	my $hash = $1;
 
-	# rename file
-	system("mv", "$itempath", "$loc$hash");
+	# print hash or rename file
+	if($rename){
+	    system("mv", "$itempath", "$loc$hash");
+	} else {
+	    print "$hash '$itempath'\n";
+	}
     }
 }
