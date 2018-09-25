@@ -37,11 +37,12 @@ while(my $item = readdir $dir){
 	die "$HASH_BIN output could not be parsed" if not defined $1;
 	my $hash = $1;
 
-	# print hash or rename file
+	# print hash
+	print "$hash '$itempath'\n";
+
+	# rename file
 	if($rename){
 	    system("mv", "$itempath", "$loc$hash");
-	} else {
-	    print "$hash '$itempath'\n";
 	}
     }
 }
