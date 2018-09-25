@@ -30,7 +30,7 @@ while(my $item = readdir $dir){
     } else {
 
 	# calculate hash
-	`$hash_bin $itempath` =~ /(^[\S]+)/;
+	`$hash_bin '$itempath'` =~ /(^[\S]+)/;
 	die "$hash_bin output could not be parsed" if not defined $1;
 	my $hash = $1;
 
