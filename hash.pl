@@ -11,8 +11,18 @@ my $script = $0;
 my $loc = shift || ".";
 my $rename = shift || "";
 
-# check argument
+# check location
 die "Error: $loc is not a directory" unless -d $loc;
+
+# check safety
+if($rename) {
+    print "WARNING: Renaming files in '$loc'. Continue? (y/N) ";
+    my $ok = <>; # ask for user input
+    if($ok ne "y\n"){
+	print "Exiting.\n";
+	exit;
+    }
+}
 
 # read dir
 opendir(my $dir, $loc);
