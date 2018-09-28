@@ -7,9 +7,10 @@ use warnings;
 my $HASH_BIN = "md5sum";
 
 # initialize variables
-my $script = $0;
-my $loc = shift || ".";
-my $rename = shift || "";
+my $script = $0; # the name of this script (for recursion)
+my $loc = shift || "."; # location to traverse
+my $rename = shift || ""; # make hash value the new name of the file
+my $keepExt = shift || ""; # whether to keep file extension when renaming
 
 # check location
 die "Error: $loc is not a directory" unless -d $loc;
@@ -19,8 +20,8 @@ if($rename) {
     print "WARNING: Renaming files in '$loc'. Continue? (y/N) ";
     my $ok = <>; # ask for user input
     if($ok ne "y\n"){
-	print "Exiting.\n";
-	exit;
+        print "Exiting.\n";
+        exit;
     }
 }
 
@@ -38,21 +39,31 @@ while(my $item = readdir $dir){
     # traverse or hash
     if(-d $itempath){
 
-	# traverse directory
-	system($script, $itempath);
+        # traverse directory
+        system($script, $itempath);
     } else {
 
-	# calculate hash
-	`$HASH_BIN '$itempath'` =~ /(^[\S]+)/;
-	die "$HASH_BIN output could not be parsed" if not defined $1;
-	my $hash = $1;
+        # calculate hash
+        `$HASH_BIN '$itempath'` =~ /(^[\S]+)/;
+        die "$HASH_BIN output could not be parsed for '$itempath'" if not defined $1;
+        my $hash = $1;
 
-	# print hash
-	print "$hash '$itempath'\n";
+        # print hash
+        print "$hash '$itempath'\n";
 
-	# rename file
-	if($rename){
-	    system("mv", "$itempath", "$loc$hash");
-	}
+        # maybe rename file
+        if($rename){
+
+            # maybe keep extension
+            my $ext = "";
+            if($keepExt){
+                if($itempath =~ /\.([^.]+)$/){
+                    $ext = "." . $1
+                }
+            }
+
+            # rename
+            system("mv", "$itempath", "$loc$hash$ext");
+        }
     }
 }
