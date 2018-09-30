@@ -53,8 +53,12 @@ sub hash {
             hash($itempath, $rename, $keepExt);
         } else {
 
+            # make sanitized itempath
+            my $itempathSan = $itempath;
+            $itempathSan =~ s/"/\\"/;
+
             # calculate hash
-            `$HASH_BIN '$itempath'` =~ /(^[\S]+)/;
+            `$HASH_BIN "$itempathSan"` =~ /(^[\S]+)/;
             die "$HASH_BIN output could not be parsed for '$itempath'" if not defined $1;
             my $hash = $1;
 
@@ -63,7 +67,6 @@ sub hash {
 
             # maybe rename file
             if($rename){
-                print "rename $itempath (\$rename = '$rename')\n";
 
                 # maybe keep extension
                 my $ext = "";
