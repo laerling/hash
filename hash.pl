@@ -24,7 +24,7 @@ if($rename) {
     }
 }
 
-# start recursing
+# start traversing
 hash($loc, $rename, $keepExt);
 
 # recursively hash files inside a directory
@@ -77,9 +77,8 @@ sub hash {
                 }
 
                 # rename
-                system("mv", "$itempath", "$loc$hash$ext");
+                die if system("mv", "$itempath", "$loc$hash$ext");
             }
         }
     }
-
 }
