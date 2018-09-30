@@ -7,7 +7,6 @@ use warnings;
 my $HASH_BIN = "md5sum";
 
 # initialize variables
-my $script = $0; # the name of this script (for recursion)
 my $loc = shift || "."; # location to traverse
 my $rename = shift || ""; # make hash value the new name of the file
 my $keepExt = shift || ""; # whether to keep file extension when renaming
@@ -25,45 +24,59 @@ if($rename) {
     }
 }
 
-# read dir
-opendir(my $dir, $loc);
-while(my $item = readdir $dir){
+# start recursing
+hash($loc, $rename, $keepExt);
 
-    # exclude ., .., and .git
-    next if $item =~ /^(\.|\.\.)$|\.git/;
+# recursively hash files inside a directory
+sub hash {
 
-    # canonize $loc and build path
-    $loc = $loc . "/" unless substr($loc, -1) eq '/';
-    my $itempath = "$loc$item";
+    # reinitialize
+    my $loc = shift || "."; # location to traverse
+    my $rename = shift || ""; # make hash value the new name of the file
+    my $keepExt = shift || ""; # whether to keep file extension when renaming
 
-    # traverse or hash
-    if(-d $itempath){
+    # read dir
+    opendir(my $dir, $loc);
+    while(my $item = readdir $dir){
 
-        # traverse directory
-        system($script, $itempath);
-    } else {
+        # exclude ., .., and .git
+        next if $item =~ /^(\.|\.\.)$|\.git/;
 
-        # calculate hash
-        `$HASH_BIN '$itempath'` =~ /(^[\S]+)/;
-        die "$HASH_BIN output could not be parsed for '$itempath'" if not defined $1;
-        my $hash = $1;
+        # canonize $loc and build path
+        $loc = $loc . "/" unless substr($loc, -1) eq '/';
+        my $itempath = "$loc$item";
 
-        # print hash
-        print "$hash '$itempath'\n";
+        # traverse or hash
+        if(-d $itempath){
 
-        # maybe rename file
-        if($rename){
+            # traverse directory
+            hash($itempath, $rename, $keepExt);
+        } else {
 
-            # maybe keep extension
-            my $ext = "";
-            if($keepExt){
-                if($itempath =~ /\.([^.]+)$/){
-                    $ext = "." . $1
+            # calculate hash
+            `$HASH_BIN '$itempath'` =~ /(^[\S]+)/;
+            die "$HASH_BIN output could not be parsed for '$itempath'" if not defined $1;
+            my $hash = $1;
+
+            # print hash
+            print "$hash '$itempath'\n";
+
+            # maybe rename file
+            if($rename){
+                print "rename $itempath (\$rename = '$rename')\n";
+
+                # maybe keep extension
+                my $ext = "";
+                if($keepExt){
+                    if($itempath =~ /\.([^.]+)$/){
+                        $ext = "." . $1
+                    }
                 }
-            }
 
-            # rename
-            system("mv", "$itempath", "$loc$hash$ext");
+                # rename
+                system("mv", "$itempath", "$loc$hash$ext");
+            }
         }
     }
+
 }
