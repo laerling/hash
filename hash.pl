@@ -3,10 +3,10 @@
 use strict;
 use warnings;
 
-# initialize constants
+# constants
 my $HASH_BIN = "md5sum";
 
-# initialize variables
+# initialize
 my $loc = shift || "."; # location to traverse
 my $rename = shift || ""; # make hash value the new name of the file
 my $keepExt = shift || ""; # whether to keep file extension when renaming
@@ -30,7 +30,7 @@ hash($loc, $rename, $keepExt);
 # recursively hash files inside a directory
 sub hash {
 
-    # reinitialize
+    # initialize
     my $loc = shift || "."; # location to traverse
     my $rename = shift || ""; # make hash value the new name of the file
     my $keepExt = shift || ""; # whether to keep file extension when renaming
@@ -71,7 +71,7 @@ sub hash {
                 # maybe keep extension
                 my $ext = "";
                 if($keepExt){
-                    if($itempath =~ /\.([^.]+)$/){
+                    if($itempath =~ /\.([^.\/]+)$/){
                         $ext = "." . $1
                     }
                 }
