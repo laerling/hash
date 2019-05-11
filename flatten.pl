@@ -71,9 +71,14 @@ sub flatten {
             # skip . and ..
             next if $item =~ /^(\.|\.\.)$/;
 
+            # rename if an already existing file would be overwritten
+            while(-e "$loc../$item"){
+                $item .= "_";
+            }
+
             # migrate files up
-            print("mv '$itempath' '$loc..'\n");
-            die if system("mv", "$itempath", "$loc..")
+            print("mv '$itempath' '$loc../$item'\n");
+            die if system("mv", "$itempath", "$loc../$item")
         }
     }
 }
