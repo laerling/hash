@@ -41,7 +41,7 @@ for filename in "$@"; do
     file=$(realpath "$filename")
 
     # skip this script and the two directories
-    if [ "$file" = "$scriptpath" -o "$file" = "$choice1" -o "$file" = "$choice2" ]; then
+    if [ "$file" = "$scriptpath" ] || [ "$file" = "$choice1" ] || [ "$file" = "$choice2" ]; then
         continue
     fi
 
@@ -52,7 +52,7 @@ for filename in "$@"; do
     # decide!
     echo "(1) $arg1"
     echo "(2) $arg2"
-    read -p "Where to move $filename? " choice
+    read -pr "Where to move $filename? " choice
     case "$choice" in
         [1]* ) mv "$filename" "$choice1/";;
         [2]* ) mv "$filename" "$choice2/";;
