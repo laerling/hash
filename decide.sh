@@ -46,13 +46,12 @@ for filename in "$@"; do
     fi
 
     # open file asynchronously, ignoring output
-    (mpv --loop "$filename" 2>&1) > /dev/null &
-    child_pid="$!"
+    (mpv --loop "$filename" &> /dev/null) & child_pid="$!"
 
     # decide!
     echo "(1) $arg1"
     echo "(2) $arg2"
-    read -pr "Where to move $filename? " choice
+    read -rp "Where to move $filename? " choice
     case "$choice" in
         [1]* ) mv "$filename" "$choice1/";;
         [2]* ) mv "$filename" "$choice2/";;
