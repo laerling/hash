@@ -77,7 +77,9 @@ sub hash {
                 }
 
                 # rename
-                die if system("mv", "-f", "$itempath", "$loc$hash$ext");
+		if("$itempath" ne "$loc$hash$ext"){
+		    die if system("mv", "-f", "$itempath", "$loc$hash$ext");
+		}
             }
         }
     }
