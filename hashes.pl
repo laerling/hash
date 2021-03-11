@@ -25,10 +25,10 @@ if($rename) {
 }
 
 # start traversing
-hash($loc, $rename, $keepExt);
+hashes($loc, $rename, $keepExt);
 
 # recursively hash files inside a directory
-sub hash {
+sub hashes {
 
     # initialize
     my $loc = shift || "."; # location to traverse
@@ -50,7 +50,7 @@ sub hash {
         if(-d $itempath){
 
             # traverse directory
-            hash($itempath, $rename, $keepExt);
+            hashes($itempath, $rename, $keepExt);
         } else {
 
             # make sanitized itempath

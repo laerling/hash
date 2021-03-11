@@ -25,7 +25,7 @@ done
 
 # check amount of files
 if [ "$count" -lt "2" ]; then
-    echo "Error: Not enough items to sort"
+    echo "Error: Not enough items to rate"
     exit 1
 fi
 
@@ -59,7 +59,7 @@ while [ -n "$run" ]; do
     # ask user
     choice="0"
     while [ -n "$choice" ] && [ "$choice" != "s" ] && [ "$choice" != "1" ] && [ "$choice" != "2" ]; do
-	read -rp "Which is better? (s to skip, <enter> to sort and exit, <C-c> to abort) " choice
+	read -rp "Which is better? (s to skip, <enter> to rate and exit, <C-c> to abort) " choice
     done
 
     # close files
