@@ -10,7 +10,9 @@ my $loc = shift || "."; # location to traverse
 die "Error: $loc is not a directory" unless -d $loc;
 
 # check user sanity
-print "WARNING: Flattening directory '$loc'. This cannot be undone. Continue? (y/N) ";
+print "WARNING: Flattening directory '$loc'.\n";
+print "This will delete ALL .git directories in the tree!\n";
+print "This operation cannot be undone. Continue? (y/N) ";
 my $ok = <>; # ask for user input
 if($ok ne "y\n"){
     print "Exiting.\n";
